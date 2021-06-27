@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.treazer.app",
+      "sha256_cert_fingerprints": [
+        "4E:54:11:DE:3A:59:82:71:B8:A6:84:4D:D6:EC:7E:75:7C:4A:16:58:5F:6A:2E:8F:FD:BD:2A:07:C0:76:81:84"
+      ]
+    }
+  }
+]
