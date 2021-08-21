@@ -3,6 +3,7 @@ export const initialState = {
   friend: null,
   isLogin: localStorage.getItem("token") ? true : false,
   userRole: "user",
+  isBeamToken: true,
   error: null,
 };
 
@@ -23,6 +24,11 @@ export const reducer = (state, action) => {
       return {
         ...state,
         isLogin: false,
+      };
+    case "BEAM_TOKEN_CLEAR":
+      return {
+        ...state,
+        isBeamToken: false,
       };
     case "SET_USER_ROLE":
       return {

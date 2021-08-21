@@ -8,12 +8,12 @@ export const initialState = {
 export const reducer = (state, action) => {
   switch (action.type) {
     case "GET_ALL_POSTS":
-      action.payload.forEach((post)=>{
+      action.payload.forEach((post) => {
         state.allPosts.push(post)
       })
       return {
         ...state,
-        allPosts : state.allPosts
+        allPosts: state.allPosts
       }
     case "GET_MY_POSTS":
       return {
@@ -28,10 +28,14 @@ export const reducer = (state, action) => {
     case "GET_SINGLE_POST":
       return {
         ...state,
-        // singlePost: action.payload,
         singlePost: state.allPosts.find(
           post => post._id.toString() === action.payload.toString()
         )
+      }
+    case "FIND_SINGLE_POST":
+      return {
+        ...state,
+        singlePost: action.payload,
       }
     case "ADD_MY_POST":
       return {
@@ -68,14 +72,14 @@ export const reducer = (state, action) => {
             return post
           }
         }),
-        myPosts: state.myPosts.map((post)=> {
-           if( post._id.toString() === action.payload.postId.toString()){
-             post.comments = action.payload.comments
-              return post
-           } else {
-             return post
-           }
-      })
+        myPosts: state.myPosts.map((post) => {
+          if (post._id.toString() === action.payload.postId.toString()) {
+            post.comments = action.payload.comments
+            return post
+          } else {
+            return post
+          }
+        })
       }
     case "LIKE_A_POST":
       return {

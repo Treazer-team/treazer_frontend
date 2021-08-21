@@ -11,11 +11,10 @@ const SelectChoice = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   // const { state } = useContext(AuthContext);
   return (
-    <View style={styles.container}>
+    <View style={{ backgroundColor: "#fff", flex: 1 }}>
       <View
         style={{
-          height: height * 0.9,
-          width: width * 0.9,
+          width: "100%",
           marginHorizontal: "auto",
           marginVertical: "auto",
           alignItems: "center",
@@ -32,9 +31,8 @@ const SelectChoice = () => {
             resizemode='cover'
             effect='blur'
             style={{
-              width: "60%",
-              height: 150,
-              marginLeft: 60,
+              width: 160,
+              height: 140,
             }}
           />
           <Button
@@ -49,7 +47,7 @@ const SelectChoice = () => {
             }}
             containerStyle={{
               marginVertical: 10,
-              width: "70%",
+              width: "100%",
               marginHorizontal: "auto",
               borderRadius: 10,
               border: "none",
@@ -65,17 +63,18 @@ const SelectChoice = () => {
           />
         </View>
         {user && user?.role === "resturant-owner" && (
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
+          <View style={{
+            justifyContent: "center", alignItems: "center",
+          }}>
             <LazyLoadImage
               src={require("../../assets/images/upload_products.webp")}
               resizemode='cover'
               effect='blur'
               style={{
-                width: "60%",
-                height: 150,
+                width: 160,
+                height: 140,
                 borderTopRightRadius: 20,
                 borderTopLeftRadius: 20,
-                marginLeft: 60,
               }}
             />
             <Button
@@ -90,7 +89,7 @@ const SelectChoice = () => {
               }}
               containerStyle={{
                 marginVertical: 10,
-                width: "70%",
+                width: "100%",
                 marginHorizontal: "auto",
                 borderRadius: 10,
                 border: "none",
@@ -113,11 +112,3 @@ const SelectChoice = () => {
 
 export default SelectChoice;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-    width: "100%",
-    padding: 20,
-  },
-});

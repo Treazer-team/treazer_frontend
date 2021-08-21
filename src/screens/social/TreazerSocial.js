@@ -4,18 +4,20 @@ import {
   FlatList,
   Dimensions,
   SafeAreaView,
-  ActivityIndicator,
   View,
   TouchableOpacity
 } from "react-native"
-
+import Skeleton from "@material-ui/lab/Skeleton";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css"
 import "react-lazy-load-image-component/src/effects/black-and-white.css"
 import { Snackbar } from "react-native-paper"
+import { Image } from 'react-native-elements'
 import { useNavigation } from "@react-navigation/native"
 import PostActions from "./PostActions"
 import { PostContext } from "../../context/postContext"
 import { getAllPosts } from "../../functions/postfunction"
+import Loading from "../../navigation/Loading";
 
 const { height, width } = Dimensions.get("window")
 const SPACING = 10
@@ -77,10 +79,15 @@ const TreazerSocial = ({ route, postReq }) => {
               <View
                 key={index}
                 style={{
-                  width: width * 0.75,
+                  width: width < 500 ? width * 0.75
+                    : width > 500 && width < 700 ? width * 0.65
+                      : width > 700 && width < 900 ? width * 0.55
+                        : width > 900 && width < 1100 ? width * 0.45
+                          : width * 0.3,
+                  height: height * 0.8,
                   marginHorizontal: "auto",
-                  marginVertical: 10
-                  // border:"1px solid black"
+                  justifyContent: "center",
+
                 }}>
                 <View
                   style={{
@@ -93,32 +100,29 @@ const TreazerSocial = ({ route, postReq }) => {
                   }}>
                   <TouchableOpacity
                     style={{
+                      position: "relative",
                       width: "100%",
-                      height: ITEM_SIZE * 1.2,
+                      height: width > 500 ? height * 0.6 : ITEM_SIZE * 1.2,
                       resizeMode: "cover",
                       borderTopRightRadius: 20,
                       borderTopLeftRadius: 20,
                       backgroundColor: "#ffffff",
                       boxShadow: "0 4px 8px 0 #C9CCD1, 0 6px 20px 0 #C9CCD1"
                     }}
-                    onPress={() => addSinglePost(item._id)}
-                  />
-                  <img
-                    src={item?.photo}
-                    alt={item?.title}
-                    onClick={() => addSinglePost(item._id)}
-                    style={{
-                      position: "absolute",
-                      // boxShadow: "0 4px 8px 0 #C9CCD1, 0 6px 20px 0 #C9CCD1",
-                      width: "100%",
-                      flex: 1,
-                      maxHeight: ITEM_SIZE * 1.2,
-                      resizeMode: "cover",
-                      borderTopRightRadius: 20,
-                      borderTopLeftRadius: 20
-                    }}
-                  />
-
+                    onPress={() => addSinglePost(item._id)}>
+                    <Image
+                      source={{ uri: item?.photo }}
+                      style={{
+                        width: "100%",
+                        height: width > 500 ? height * 0.6 : height * 0.5,
+                        borderTopRightRadius: 20,
+                        borderTopLeftRadius: 20,
+                      }}
+                      transition
+                      transitionDuration={360}
+                      resizeMode="center"
+                    />
+                  </TouchableOpacity>
                   <PostActions
                     post={item}
                     route={route}
@@ -130,28 +134,12 @@ const TreazerSocial = ({ route, postReq }) => {
           }}
         />
       ) : (
-        <View
-          style={{
-            width,
-            height,
-            justifyContent: "center",
-            marginHorizontal: "auto",
-            marginVertical: "auto",
-            alignItems: "center"
-          }}>
-          <ActivityIndicator
-            size='large'
-            color='#82b1ff'
-            style={{
-              margin: "auto"
-            }}
-          />
-        </View>
+        <Loading />
       )}
       <Snackbar
         visible={isLogin}
         onDismiss={onDismissSnackBar}
-        style={{ bottom: 50, backgroundColor: "#ff5252" }}
+        style={{ bottom: 50 }}
         duration={3000}
         action={{
           label: "Close",
@@ -169,26 +157,25 @@ export default TreazerSocial
 
 const styles = StyleSheet.create({
   container: {
-    height: height * 0.8,
+    height: height * 0.85,
     width: "100%",
     backgroundColor: "#ffffff"
   },
-  item: {
-    marginHorizontal: 10,
-    width: width * 0.8,
-    height: height * 0.85
-  },
-  posterImage: {
-    width: "100%",
-    height: ITEM_SIZE * 1.2,
-    resizeMode: "cover",
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-    boxShadow: "0 4px 8px 0 #C9CCD1, 0 6px 20px 0 #C9CCD1"
-  },
-  loadingContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
-  }
 })
+
+
+                  //  <img
+                  //   src={item?.photo}
+                  //   alt={item?.title}
+                  //   onClick={() => addSinglePost(item._id)}
+                  //   style={{
+                  //     position: "absolute",
+                  //     width: "100%",
+                  //     flex: 1,
+                  //     maxHeight: ITEM_SIZE * 1.2,
+                  //     resizeMode: "cover",
+                  //     borderTopRightRadius: 20,
+                  //     borderTopLeftRadius: 20
+                  //   }}
+                  // /> 
+

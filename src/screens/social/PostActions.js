@@ -48,7 +48,7 @@ const PostActions = ({ route, post, setisLogin }) => {
         )
         .then(res => {
           const { msg, likes } = res.data
-          console.log(msg, likes)
+          // console.log(msg, likes)
           postDispatch({ type: "GET_SINGLE_POST", payload: postId })
           postDispatch({ type: "LIKE_A_POST", payload: { postId, likes } })
         })
@@ -64,9 +64,8 @@ const PostActions = ({ route, post, setisLogin }) => {
     followORunfollow(
       id,
       { postId },
-      { userState },
       { userDispatch, postDispatch },
-      { setisLogin, setFollowMsg, setfollowSnackbarOpen }
+      { setisLogin, setFollowMsg, setfollowSnackbarOpen },
     )
   }
 
@@ -78,7 +77,7 @@ const PostActions = ({ route, post, setisLogin }) => {
         alert(`Uh oh, sharing isn't available on your platform`)
         return
       }
-      Sharing.shareAsync(`https://treazer.com/social/postdetails/${postId}`)
+      Sharing.shareAsync(`https://treazer-app.firebaseapp.com/social/postdetails/${postId}`)
     }
   }
 
@@ -93,12 +92,11 @@ const PostActions = ({ route, post, setisLogin }) => {
         boxShadow:
           route?.name === "FriendProfile" ? "none" : "0 4px 8px 0 #C9CCD1",
         flexDirection: "column",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
       }}>
       {route?.name !== "FriendProfile" && (
         <View
           style={{
-            // border: "1px solid black",
             width: "100%",
             paddingHorizontal: 10,
             marginHorizontal: "auto",
@@ -196,7 +194,7 @@ const PostActions = ({ route, post, setisLogin }) => {
             route?.name === "FriendProfile" ? "space-between" : "space-around",
           marginBottom: route?.name === "FriendProfile" ? 0 : 15
         }}>
-        <View
+        <TouchableOpacity
           style={{
             height: 35,
             width: 40,
@@ -204,10 +202,11 @@ const PostActions = ({ route, post, setisLogin }) => {
             justifyContent: "center",
             borderRadius: 20,
             backgroundColor: "#ffffff",
-            flexDirection: "row"
+            flexDirection: "row",
           }}>
           {post.likes.length > 0 && post.likes.includes(userId?.toString()) ? (
-            <View
+            <TouchableOpacity
+              onPress={() => likePost(post._id)}
               style={{
                 borderRadius: 20,
                 width: 35,
@@ -223,18 +222,19 @@ const PostActions = ({ route, post, setisLogin }) => {
                 xmlns='http://www.w3.org/2000/svg'
                 className='ionicon'
                 viewBox='0 0 512 512'
-                width={24}
-                height={24}
-                onClick={() => likePost(post._id)}>
+                width={18}
+                height={18}
+              >
                 <title>Heart</title>
                 <path
                   fill='#ff5252'
                   d='M256 448a32 32 0 01-18-5.57c-78.59-53.35-112.62-89.93-131.39-112.8-40-48.75-59.15-98.8-58.61-153C48.63 114.52 98.46 64 159.08 64c44.08 0 74.61 24.83 92.39 45.51a6 6 0 009.06 0C278.31 88.81 308.84 64 352.92 64c60.62 0 110.45 50.52 111.08 112.64.54 54.21-18.63 104.26-58.61 153-18.77 22.87-52.8 59.45-131.39 112.8a32 32 0 01-18 5.56z'
                 />
               </svg>
-            </View>
+            </TouchableOpacity>
           ) : (
-            <View
+            <TouchableOpacity
+              onPress={() => likePost(post._id)}
               style={{
                 borderRadius: 20,
                 width: 35,
@@ -250,9 +250,9 @@ const PostActions = ({ route, post, setisLogin }) => {
                 xmlns='http://www.w3.org/2000/svg'
                 className='ionicon'
                 viewBox='0 0 512 512'
-                width={24}
-                height={24}
-                onClick={() => likePost(post._id)}>
+                width={18}
+                height={18}
+              >
                 <title>Heart</title>
                 <path
                   d='M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z'
@@ -263,10 +263,11 @@ const PostActions = ({ route, post, setisLogin }) => {
                   strokeWidth='32'
                 />
               </svg>
-            </View>
+            </TouchableOpacity>
           )}
           {post.likes.length > 0 && (
             <Badge
+              onPress={() => likePost(post._id)}
               status='error'
               value={post.likes.length}
               containerStyle={{
@@ -276,7 +277,7 @@ const PostActions = ({ route, post, setisLogin }) => {
               }}
             />
           )}
-        </View>
+        </TouchableOpacity>
         <View
           style={{
             height: 35,
@@ -295,8 +296,8 @@ const PostActions = ({ route, post, setisLogin }) => {
             xmlns='http://www.w3.org/2000/svg'
             className='ionicon'
             viewBox='0 0 512 512'
-            width={24}
-            height={24}
+            width={18}
+            height={18}
             onClick={toggleDrawer}>
             <title>Chatbox</title>
             <path
@@ -337,8 +338,8 @@ const PostActions = ({ route, post, setisLogin }) => {
             xmlns='http://www.w3.org/2000/svg'
             className='ionicon'
             viewBox='0 0 512 512'
-            width={24}
-            height={24}
+            width={18}
+            height={18}
             onClick={() => sharePost(post._id)}>
             <title>Share Social</title>
             <circle
@@ -394,7 +395,6 @@ const PostActions = ({ route, post, setisLogin }) => {
             style={{
               width: width * 0.85,
               marginHorizontal: "auto",
-              backgroundColor: "#43a047"
             }}
             duration={4000}>
             <Text

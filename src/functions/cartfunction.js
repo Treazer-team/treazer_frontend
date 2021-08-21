@@ -46,7 +46,7 @@ const addTocart = (
       }
     )
       .then((res) => {
-        const { newCart, success } = res.data;
+        const { newCart } = res.data;
         // console.log(newCart, success);
         const itemIds = newCart.cartItem.map((item) => item.productId);
         cartDispatch({ type: "ADD_TO_CART", payload: { newCart, itemIds } });

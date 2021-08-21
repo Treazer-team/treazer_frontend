@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import GridList from "@material-ui/core/GridList";
 import Skeleton from "@material-ui/lab/Skeleton";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import PostActions from "./PostActions";
+import PostActions from "./social/";
 
 const useStyles = makeStyles(() => ({
   gridList: {

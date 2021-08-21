@@ -15,18 +15,18 @@ import { Snackbar } from "react-native-paper"
 import PostActions from "./PostActions"
 import SocialHeader from "./SocialHeader"
 import { PostContext } from "../../context/postContext"
-import { useNavigation } from "@react-navigation/native"
-import { getAllPosts } from "../../functions/postfunction"
+// import { useNavigation } from "@react-navigation/native"
+import { getAllPosts, findSinglePost } from "../../functions/postfunction"
 import GridImageview from "./GridImageview"
-
+// import axios from "axios"
+// import BASE_URL from "../../api"
 const { width, height } = Dimensions.get("window")
 
 const PostDetails = ({ route }) => {
-  const navigation = useNavigation()
+  // const navigation = useNavigation()
   const { postId } = route?.params
   const { state: postState, dispatch: postDispatch } = useContext(PostContext)
   const [showMore, setShowMore] = useState(false)
-
   const [isLogin, setisLogin] = useState(false)
   const onDismissSnackBar = () => setisLogin(false)
 
@@ -40,6 +40,13 @@ const PostDetails = ({ route }) => {
       )
     }
   }, [postId])
+
+  useEffect(() => {
+    if (!postState.singlePost) {
+      findSinglePost(postDispatch, postId)
+    }
+  }, [])
+
   const scrollRef = useRef(null)
   const scrollViewRef = useRef(null)
   const handleScroll = () => {
@@ -80,7 +87,11 @@ const PostDetails = ({ route }) => {
                   width: "100%",
                   marginHorizontal: "auto"
                 }}>
-                <View>
+                <View style={{
+                  borderTopRightRadius: 20,
+                  borderTopLeftRadius: 20,
+                  boxShadow: "0 4px 8px 0 #C9CCD1, 0 6px 20px 0 #C9CCD1"
+                }}>
                   <LazyLoadImage
                     src={postState.singlePost?.photo}
                     resizemode='cover'
@@ -90,7 +101,6 @@ const PostDetails = ({ route }) => {
                       flex: 1,
                       borderTopRightRadius: 20,
                       borderTopLeftRadius: 20,
-                      boxShadow: "0 4px 8px 0 #C9CCD1, 0 6px 20px 0 #C9CCD1"
                     }}
                   />
                   <View
@@ -103,7 +113,9 @@ const PostDetails = ({ route }) => {
                       alignItems: "center",
                       justifyContent: "center",
                       borderRadius: 20,
-                      backgroundColor: "#ffffff"
+                      backgroundColor: "#ffffff",
+                      border: "1px solid #eeeeee",
+                      // boxShadow: "0 2px 2px 0 #C9CCD1, 0 4px 4px 0 #C9CCD1"
                     }}>
                     <Icon
                       name='arrow-back'
@@ -116,6 +128,7 @@ const PostDetails = ({ route }) => {
                 </View>
                 <PostActions
                   post={postState?.singlePost}
+                  // post={postTofind}
                   route={route}
                   setisLogin={setisLogin}
                 />
@@ -238,7 +251,7 @@ const PostDetails = ({ route }) => {
       <Snackbar
         visible={isLogin}
         onDismiss={onDismissSnackBar}
-        style={{ bottom: 50, backgroundColor: "#ff5252" }}
+        style={{ bottom: 50 }}
         duration={3000}
         action={{
           label: "Close",

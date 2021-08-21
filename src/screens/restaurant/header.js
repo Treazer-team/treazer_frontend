@@ -22,12 +22,12 @@ const Header = () => {
             flex: 1,
           }}>
           <img
-            src={require("../../assets/images/treazer logo.webp")}
+            src={require("../../assets/images/brand_logo.png")}
             alt='Treazer'
             style={{
-              marginLeft: 20,
+              marginLeft: 10,
               marginTop: 10,
-              width: 120,
+              width: 140,
               height: 40,
             }}
           />
@@ -46,12 +46,10 @@ const Header = () => {
         </View>
         <View
           style={{
-            // flexDirection: "column-reverse",
             justifyContent: "center",
             alignItems: "center",
             marginHorizontal: 5,
             // border: "1px solid black",
-            height: 55,
           }}>
           {/* <Text
             style={{
@@ -70,23 +68,23 @@ const Header = () => {
               fontFamily: "Open Sans",
               letterSpacing: 1,
               textAlign: "center",
-              marginTop: 5,
+              marginTop: 20,
             }}>
-            {locationState.landmark?.slice(0, 20)}...
+            {locationState.landmark?.slice(0, 25)}...
           </Text>
         </View>
         <TouchableOpacity
           onPress={() => navigation.navigate("UserLocation")}
           style={{
-            width: 50,
-            paddingRight: 20,
+            marginRight: 20,
             justifyContent: "center",
           }}>
           <Icon
             name='map-marker-alt'
             type='font-awesome-5'
             color='#424242'
-            size={24}
+            size={20}
+            style={{ marginTop: 10 }}
           />
         </TouchableOpacity>
       </View>

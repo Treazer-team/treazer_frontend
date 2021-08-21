@@ -22,7 +22,7 @@ const SocialHome = ({ route }) => {
   const resturantId = user && user.resturantId?._id;
 
   useEffect(() => {
-    if (postState.allPosts?.length === 0) {
+    if (!postState.allPosts || postState.allPosts?.length === 0) {
       getAllPosts(
         postDispatch,
         { setpostReq },

@@ -23,12 +23,12 @@ const SocialHeader = () => {
             flex: 1,
           }}>
           <img
-            src={require("../../assets/images/treazer logo.webp")}
+            src={require("../../assets/images/brand_logo.png")}
             alt='Treazer'
             style={{
-              marginLeft: 20,
+              marginLeft: 10,
               marginTop: 10,
-              width: 120,
+              width: 140,
               height: 40,
             }}
           />
@@ -37,7 +37,7 @@ const SocialHeader = () => {
           onPress={() => navigation.navigate("Notification")}
           style={{
             width: 50,
-            paddingRight: 20,
+            paddingRight: 15,
             justifyContent: "center",
           }}>
           <View>
@@ -50,8 +50,8 @@ const SocialHeader = () => {
               role='img'
               xmlns='http://www.w3.org/2000/svg'
               viewBox='0 0 448 512'
-              width={24}
-              height={24}
+              width={20}
+              height={20}
               style={{
                 marginTop: 10
               }}
@@ -70,7 +70,7 @@ const SocialHeader = () => {
                   containerStyle={{
                     position: "absolute",
                     top: 2,
-                    right: 2,
+                    right: 6,
                   }}
                 />
               )}
@@ -86,7 +86,7 @@ const SocialHeader = () => {
                 containerStyle={{
                   position: "absolute",
                   top: 2,
-                  right: 2,
+                  right: 6,
                 }}
               />
             ) : notiState && notiState.restaurantNotifications ? (
@@ -96,7 +96,7 @@ const SocialHeader = () => {
                 containerStyle={{
                   position: "absolute",
                   top: 2,
-                  right: 2,
+                  right: 6,
                 }}
               />
             ) : notiState && notiState.userNotifications ? (
@@ -106,7 +106,7 @@ const SocialHeader = () => {
                 containerStyle={{
                   position: "absolute",
                   top: 2,
-                  right: 2,
+                  right: 6,
                 }}
               />
             ) : (
@@ -116,7 +116,7 @@ const SocialHeader = () => {
                 containerStyle={{
                   position: "absolute",
                   top: 2,
-                  right: 2,
+                  right: 6,
                 }}
               />
             )}

@@ -27,12 +27,17 @@ project.xcworkspace
 build/
 .idea
 .gradle
+.vscode
+.expo
 local.properties
 *.iml
 *.hprof
-
-# node.js
-#
+apk/
+manifest-checksum.txt
+gradlew.bat
+gradle/
+app/
+blue/
 node_modules/
 npm-debug.log
 yarn-error.log

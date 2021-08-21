@@ -1,7 +1,7 @@
 import BASE_URL from "../api";
 
 import Axios from "axios";
-import { getNotifications } from "../functions/notificationfunction";
+import { getNotifications } from "./notificationfunction";
 import * as Speech from "expo-speech";
 import * as PusherPushNotifications from "@pusher/push-notifications-web";
 
@@ -45,12 +45,12 @@ const handleLogin = (
   setSendReq,
   setPhoneError,
   setPassError,
+  navigation
 ) => {
   setSendReq(false);
   Axios.post(`${BASE_URL}/api/user/login`, { phone: phoneNo, password })
     .then((res) => {
       const { user, token, refreshtoken } = res.data;
-      speak(user.username);
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
       localStorage.setItem("refresh-token", refreshtoken);
@@ -59,15 +59,8 @@ const handleLogin = (
       setSendReq(true);
       toggleDrawer();
       dispatch({ type: "ADD_USER", payload: user });
+      navigation.navigate("User", {screen:"Profile",params: { userId: user._id.toString() }})
       if (user) {
-
-        const beamsTokenProvider = new PusherPushNotifications.TokenProvider({
-          url: `${BASE_URL}/pusher/beams-auth`,
-          headers: {
-            "x-token": token,
-            "x-refresh-token": refreshtoken,
-          },
-        });
         beamsClient
           .start()
           .then((deviceId) =>
@@ -75,21 +68,30 @@ const handleLogin = (
               "Successfully registered with Beams. Device ID:",
               deviceId
             )
-          )
-          .then(() => beamsClient.addDeviceInterest(user._id.toString()))
-          .then(() => console.log("Successfully registered and subscribed!"))
-          .then(() => beamsClient.getDeviceInterests())
-          .then((interests) => {
-            console.log("Current interests:", interests);
+          ).then(() => {
+            const beamsTokenProvider = new PusherPushNotifications.TokenProvider({
+              url: `${BASE_URL}/pusher/beams-auth`,
+              headers: {
+                "x-token": token,
+                "x-refresh-token": refreshtoken,
+              },
+            })
+            beamsClient.addDeviceInterest(user._id.toString())
+              .then(() => console.log("Successfully registered and subscribed!"))
+              .then(() => beamsClient.getDeviceInterests())
+              .then((interests) => {
+                console.log("Current interests:", interests);
+              })
+              .then(() =>
+                beamsClient.setUserId(user._id.toString(), beamsTokenProvider)
+              )
+              .then(() => {
+                speak(user.username);
+                console.log("User ID has been set");
+              })
+              .then(() => beamsClient.getUserId())
+              .catch((e) => console.error("Could not authenticate with Beams:", e));
           })
-          .then(() =>
-            beamsClient.setUserId(user._id.toString(), beamsTokenProvider)
-          )
-          .then(() => {
-            console.log("User ID has been set");
-          })
-          .then(() => beamsClient.getUserId())
-          .catch((e) => console.error("Could not authenticate with Beams:", e));
       }
     })
     .catch((err) => {

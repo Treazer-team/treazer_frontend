@@ -29,5 +29,11 @@ export const reducer = (state, action) => {
           (noti) => noti._id.toString() !== action.payload.toString()
         ),
       };
+    case "DELETE_ALL_NOTIFICATIONS":
+      return {
+        ...state,
+        userNotifications: null,
+        restaurantNotifications: null
+      };
   }
 };

@@ -1,6 +1,6 @@
 import BASE_URL from "../api";
 import Axios from "axios";
-import { getNotifications } from "../functions/notificationfunction";
+import { getNotifications } from "./notificationfunction";
 const user1 = JSON.parse(localStorage.getItem("user"));
 const resturantId1 = user1 && user1.resturantId?._id;
 const makeOrder = (
@@ -53,7 +53,7 @@ const makeOrder = (
     setuserError("Login First");
     setOpen2(true);
   } else if (!resturantId) {
-    setrestaurentError("You have to order from a registered restaurent");
+    setrestaurentError("You have to order from a registered restaurant");
     setOpen2(true);
   } else if (!lng || !lat) {
     setlocationError(
@@ -128,10 +128,10 @@ const makeOrder = (
           });
       })
       .catch((err) => {
-        let txtmsg, successmsg;
+        let successmsg;
         if (err.response && err.response.data) {
           const { message, success } = err.response.data;
-          txtmsg = message;
+          console.log(message)
           successmsg = success;
         }
         if (!successmsg) {

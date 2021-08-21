@@ -1,19 +1,20 @@
-import React, { useContext, useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
-import { Snackbar, Portal, Dialog } from "react-native-paper";
-import { PostContext } from "../../context/postContext";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import PostActions from "./PostActions";
-// const { width, height } = Dimensions.get("window");
+import React, { useContext, useState } from "react"
+import { StyleSheet, View, Text, Dimensions } from "react-native"
+import { Snackbar, Portal, Dialog } from "react-native-paper"
+import { PostContext } from "../../context/postContext"
+import { LazyLoadImage } from "react-lazy-load-image-component"
+import PostActions from "./PostActions"
+
+const { width, height } = Dimensions.get("window")
 const FriendPosts = ({ route }) => {
   // console.log(route);
-  const { state: postState } = useContext(PostContext);
+  const { state: postState } = useContext(PostContext)
 
   const [isLogin, setisLogin] = useState(false);
   const onDismissSnackBar = () => setisLogin(false);
 
   return (
-    <View>
+    <View style={{ width: "90%" }}>
       {postState?.friendPosts?.map((post, idx) => (
         <View style={styles.container} key={idx}>
           <LazyLoadImage
@@ -25,23 +26,19 @@ const FriendPosts = ({ route }) => {
               marginLeft: "auto",
               width: "100%",
               flex: 1,
-              borderRadius: 20,
+              borderTopRightRadius: 20,
+              borderTopLeftRadius: 20,
             }}
           />
-
           <View
             style={{
-              position: "absolute",
               backgroundColor: "#ffffff",
-              bottom: 0,
               width: "100%",
-              height: 50,
+              height: 40,
               borderBottomRightRadius: 20,
               borderBottomLeftRadius: 20,
-              flexDirection: "row",
-              justifyContent: "space-between",
               paddingHorizontal: 20,
-              paddingVertical: 10,
+
             }}>
             <PostActions post={post} route={route} setisLogin={setisLogin} />
           </View>
@@ -83,8 +80,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    width: "90%",
-    flex: 1,
     marginHorizontal: "auto",
     marginVertical: 10,
     borderRadius: 20,

@@ -31,7 +31,7 @@ const ProfileBio = ({ route }) => {
   // console.log(route);
   //GLOBAL USER-STATE SETUP
   const { state, dispatch } = useContext(AuthContext)
-  const { state: restaurentState, dispatch: restaurantDispatch } =
+  const { dispatch: restaurantDispatch } =
     useContext(RestaurentContext)
   const { state: locationState } = useContext(LocationContext)
   const { dispatch: orderDispatch } = useContext(OrderContext)
@@ -57,16 +57,19 @@ const ProfileBio = ({ route }) => {
   const logout = () => {
     localStorage.removeItem("token")
     localStorage.removeItem("refresh-token")
-    dispatch({ type: "LOGOUT_USER" })
     restaurantDispatch({ type: "REMOVE_MY_RESTAURANT" })
     orderDispatch({ type: "REMOVE_ORDERS" })
-    beamsClient
-      .clearAllState()
+    dispatch({ type: "LOGOUT_USER" })
+    beamsClient.clearAllState()
       .then(() => {
-        console.log("Beams state has been cleared")
+        console.log('Beams state has been cleared')
+        dispatch({ type: "BEAM_TOKEN_CLEAR" })
       })
-
-      .catch(e => console.error("Could not clear Beams state", e))
+      .catch(e => console.error('Could not clear Beams state', e));
+    // beamsClient
+    //   .clearDeviceInterests()
+    //   .then(() => console.log("Device interests have been cleared"))
+    //   .catch(e => console.error("Could not clear Beams state", e))
   }
   //image upload
   const [imgReq, setimgReq] = useState(true)
@@ -171,7 +174,8 @@ const ProfileBio = ({ route }) => {
                       source={
                         state.user.photo
                           ? { uri: state.user.photo }
-                          : require("../../assets/icons/user.png")
+                          : "https://res.cloudinary.com/treazer/image/upload/v1625674774/logo/man_btyjgf.png"
+                        // require("../../assets/icons/user.png")
                       }
                       size={80}
                       rounded
@@ -346,7 +350,7 @@ const ProfileBio = ({ route }) => {
                 style={{
                   justifyContent: "center",
                   alignItems: "center",
-                  // marginHorizontal: 10,
+                  paddingBottom: 20,
                   width: "100%"
                 }}>
                 <Text

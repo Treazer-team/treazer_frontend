@@ -1,6 +1,7 @@
 import axios from "axios";
 import BASE_URL from "../api";
-
+const token = localStorage.getItem("token");
+const refreshtoken = localStorage.getItem("refresh-token");
 
 const getNotifications = (
   userId,
@@ -41,4 +42,24 @@ const getNotifications = (
     .catch((err) => console.log(err));
 };
 
-export { getNotifications };
+const deleteAllNotifications = (notiDispatch, userId, resturantId) => {
+  let data = {}
+  if (resturantId || resturantId !== undefined) {
+    data = { resturantId, userId }
+  } else {
+    data = { userId }
+  }
+  axios
+    .post(`${BASE_URL}/api/notification/deleteAllNotification`, data, {
+      headers: {
+        "x-token": token,
+        "x-refresh-token": refreshtoken,
+      },
+    }).then(() => {
+      notiDispatch({
+        type: "DELETE_ALL_NOTIFICATIONS"
+      })
+    })
+    .catch((err) => console.log(err))
+}
+export { getNotifications, deleteAllNotifications };

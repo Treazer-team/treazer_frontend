@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  KeyboardAvoidingView
 } from "react-native";
 import Refresh from "../refresh";
 import { Icon, Button, Input } from "react-native-elements";
@@ -243,11 +244,8 @@ export default function OrderDelivery({ route }) {
               />
             </TouchableOpacity>
           </View>
-          <View style={styles.v3}>
-            <ScrollView
-              contentContainerStyle={{
-                height: "100%",
-              }}>
+          <KeyboardAvoidingView style={styles.v3}>
+            <ScrollView>
               <Input
                 type='text'
                 value={houseNo}
@@ -371,8 +369,7 @@ export default function OrderDelivery({ route }) {
               </Dialog>
               {error}
             </ScrollView>
-          </View>
-
+          </KeyboardAvoidingView>
           <Paymentform
             open={paymentOpen}
             Transition={Transition}

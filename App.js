@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
 import { useClearCache } from "react-clear-cache";
-import * as PusherPushNotifications from "@pusher/push-notifications-web";
 import { Dimensions, View, ActivityIndicator } from "react-native";
 const { width, height } = Dimensions.get("window");
 const Rootnavigation = dynamic(
@@ -44,36 +43,6 @@ import { StylesProvider } from "@material-ui/styles";
 import { PostContextProvider } from "./src/context/postContext";
 
 const Main = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  const userId = user && user._id;
-  useEffect(() => {
-    window.navigator.serviceWorker.ready.then((serviceWorkerRegistration) => {
-      const beamsClient = new PusherPushNotifications.Client({
-        instanceId: "36674458-c456-44a3-823b-616088fa88e1",
-        serviceWorkerRegistration: serviceWorkerRegistration,
-      });
-
-      if (userId) {
-        beamsClient
-          .start()
-          .then((deviceId) =>
-            console.log(
-              "Successfully registered with Beams. Device ID:",
-              deviceId
-            )
-          )
-          .then(() => beamsClient.clearDeviceInterests())
-          .then(() => console.log("device interest clear"))
-          .then(() => beamsClient.getDeviceInterests())
-          .then((interests) => {
-            console.log("Current interests:", interests);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    });
-  }, []);
 
   return (
     <StylesProvider injectFirst>
@@ -124,3 +93,5 @@ const App = () => {
   );
 };
 export default App;
+
+

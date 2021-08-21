@@ -27,23 +27,52 @@ const getUserPosts = (postDispatch) => {
       });
   }
 };
+
+
+const findSinglePost = (postDispatch, postId, navigation) => {
+  axios
+    .post(`${BASE_URL}/api/posts/getsinglepost`, { postId })
+    .then((res) => {
+      const { singlePost } = res.data
+      // console.log(singlePost);
+      postDispatch({
+        type: "FIND_SINGLE_POST",
+        payload: singlePost,
+      })
+      if (navigation !== undefined) {
+        navigation.navigate("Social", {
+          screen: "PostDetails",
+          params: { postId: postId }
+        })
+      }
+    })
+    .catch((err) => console.log(err))
+}
+
+
 const getSinglePost = (postDispatch, postId) => {
   postDispatch({
     type: "GET_SINGLE_POST",
     payload: postId,
-  });
+  })
+
 };
+
+
 const getAllPosts = (postDispatch, { setpostReq }, { postId }, { offSet }) => {
   setpostReq !== undefined && setpostReq(false);
   axios
     .post(`${BASE_URL}/api/posts/getallposts`, { offSet })
     .then((res) => {
       let { posts } = res.data;
-      // console.log(posts);
       posts.sort(() => Math.random() - 0.5);
       postDispatch({ type: "GET_ALL_POSTS", payload: posts });
-      setpostReq !== undefined && setpostReq(true);
+      let afterRefreshedPost;
       if (postDispatch !== undefined && postId !== undefined) {
+        afterRefreshedPost = posts.find((post) => post._id.toString() === postId.toString())
+      }
+      setpostReq !== undefined && setpostReq(true);
+      if (postDispatch !== undefined && postId !== undefined && afterRefreshedPost) {
         getSinglePost(postDispatch, postId);
       }
     })
@@ -52,17 +81,15 @@ const getAllPosts = (postDispatch, { setpostReq }, { postId }, { offSet }) => {
     });
 };
 
+
 const followORunfollow = (
   id,
   { postId },
-  { userState },
   { userDispatch, postDispatch },
-  { setisLogin, setFollowMsg, setfollowSnackbarOpen }
+  { setisLogin, setFollowMsg, setfollowSnackbarOpen },
 ) => {
-  console.log(id);
-  if (!userState.isLogin) {
-    setisLogin !== undefined && setisLogin(true);
-    console.log("not login");
+  if (!token && setisLogin !== undefined) {
+    setisLogin(true);
   } else {
     axios
       .post(
@@ -94,9 +121,13 @@ const followORunfollow = (
       });
   }
 };
-const makeComment = (postId, comment, { userState }, { setisLogin, setcomment }, { postDispatch }) => {
-  console.log(postId);
-  if (userState !== undefined && !userState.isLogin && setisLogin !== undefined) {
+
+
+const makeComment = (postId, comment,
+  { setisLogin, setcomment },
+  { postDispatch }) => {
+  if (setisLogin !== undefined && token !== undefined && token === null) {
+    console.log(token)
     setisLogin(true);
   } else {
     axios
@@ -111,8 +142,7 @@ const makeComment = (postId, comment, { userState }, { setisLogin, setcomment },
         }
       )
       .then((res) => {
-        const { comments, post: commentPost } = res.data;
-        console.log(comments);
+        const { comments } = res.data;
         postDispatch({
           type: "ADD_COMMENT_TO_POST",
           payload: { postId, comments },
@@ -122,9 +152,17 @@ const makeComment = (postId, comment, { userState }, { setisLogin, setcomment },
         setcomment !== undefined && setcomment("");
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.response);
       });
   }
 };
 
-export { getUserPosts, getAllPosts, followORunfollow, makeComment };
+
+export {
+  getUserPosts,
+  getAllPosts,
+  followORunfollow,
+  getSinglePost,
+  findSinglePost,
+  makeComment
+};

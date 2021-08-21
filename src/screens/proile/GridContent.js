@@ -31,6 +31,7 @@ const GridContent = ({ route }) => {
   const [comment, setComment] = useState("");
   const [post, setPost] = useState(null);
   const [dialog, setdialog] = useState(false)
+
   const toggleDialog = () => {
     setdialog(!dialog)
   }
@@ -101,8 +102,11 @@ const GridContent = ({ route }) => {
       });
   };
 
+
   const commentOnPost = (postId) => {
-    makeComment(postId, comment, { userState: undefined }, { setisLogin: undefined, setcomment: undefined }, { postDispatch })
+    makeComment(postId, comment,
+      { setisLogin: undefined, setcomment: undefined },
+      { postDispatch })
     setComment("")
     setCommentInput(false)
   }
@@ -149,22 +153,21 @@ const GridContent = ({ route }) => {
               marginLeft: "auto",
               width: "100%",
               flex: 1,
-              borderRadius: 20,
+              borderTopRightRadius: 20,
+              borderTopLeftRadius: 20,
             }}
           />
           <View
             style={{
-              position: "absolute",
               backgroundColor: "#ffffff",
-              bottom: 0,
               width: "100%",
-              height: 50,
+              height: 40,
               borderBottomRightRadius: 20,
               borderBottomLeftRadius: 20,
               flexDirection: "row",
               justifyContent: "space-between",
               paddingHorizontal: 20,
-              paddingVertical: 10,
+              paddingVertical: 5,
             }}>
             <View
               style={{
@@ -181,8 +184,8 @@ const GridContent = ({ route }) => {
                 xmlns='http://www.w3.org/2000/svg'
                 className='ionicon'
                 viewBox='0 0 512 512'
-                width={24}
-                height={24}>
+                width={18}
+                height={18}>
                 <title>Heart</title>
                 <path
                   d='M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z'
@@ -220,8 +223,8 @@ const GridContent = ({ route }) => {
                 xmlns='http://www.w3.org/2000/svg'
                 className='ionicon'
                 viewBox='0 0 512 512'
-                width={24}
-                height={24}
+                width={18}
+                height={18}
                 onClick={() => {
                   setPost(post)
                   toggleDialog()
@@ -263,8 +266,8 @@ const GridContent = ({ route }) => {
                 xmlns='http://www.w3.org/2000/svg'
                 className='ionicon'
                 viewBox='0 0 512 512'
-                width={24}
-                height={24}
+                width={18}
+                height={18}
                 onClick={() => sharePost(post._id)}>
                 <title>Share Social</title>
                 <circle
@@ -423,12 +426,13 @@ const GridContent = ({ route }) => {
           scroll="paper"
           fullWidth={true}
           maxWidth="80%"
-
         >
-          <DialogContent dividers={true} style={{ width: width * 0.7, height: height * 0.7 }}>
+          <DialogContent dividers={true}
+            style={{
+              width: "100%", height: 500, padding: 0
+            }}>
             {post.comments.length === 0 ? <View
               style={{
-                width: "100%",
                 justifyContent: "center",
                 alignItems: "center",
               }}>
@@ -470,10 +474,8 @@ const GridContent = ({ route }) => {
             </View> : post?.comments.map((comment, idx) =>
               <View key={idx} style={{
                 flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                // width:"80%",
-                // border:"1px solid black"
+                marginTop: 15,
+                marginHorizontal: 10,
               }}>
                 <Avatar
                   source={
@@ -504,14 +506,13 @@ const GridContent = ({ route }) => {
                 />
                 <View
                   style={{
-                    width: "80%",
+                    maxWidth: "80%",
                     borderRadius: 15,
                     backgroundColor: "#eeeeee",
                     marginLeft: 10,
                     paddingHorizontal: 10,
-                    paddingBottom: 10,
-                    paddingTop: 5,
-                    marginVertical: 10
+                    paddingVertical: 5,
+                    // marginVertical: 10
                   }}>
                   <Text
                     onPress={() => {
@@ -523,7 +524,7 @@ const GridContent = ({ route }) => {
                     }
                     }
                     style={{
-                      width: "90%",
+                      width: "100%",
                       // marginHorizontal:"auto",
                       fontSize: 12,
                       fontWeight: "700",
@@ -619,7 +620,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "90%",
-    flex: 1,
     marginHorizontal: "auto",
     marginVertical: 10,
     borderRadius: 20,

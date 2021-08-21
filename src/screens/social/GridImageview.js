@@ -5,10 +5,10 @@ import GridList from "@material-ui/core/GridList"
 import GridListTile from "@material-ui/core/GridListTile"
 import GridListTileBar from "@material-ui/core/GridListTileBar"
 import IconButton from "@material-ui/core/IconButton"
-import InfoIcon from "@material-ui/icons/Info"
+// import InfoIcon from "@material-ui/icons/Info"
 import { PostContext } from "../../context/postContext"
 
-const { width, height } = Dimensions.get("window")
+const { width } = Dimensions.get("window")
 const useStyles = makeStyles(() => ({
   gridList: {
     width: "100%",
@@ -23,7 +23,7 @@ const GridImageview = ({ allPosts, scrollViewRef }) => {
   const classes = useStyles()
   const { dispatch: postDispatch } = useContext(PostContext)
 
-  const getSinglePost = (postDispatch, postId) => {
+  const getSinglePost = (postId) => {
     postDispatch({
       type: "GET_SINGLE_POST",
       payload: postId
@@ -62,7 +62,7 @@ const GridImageview = ({ allPosts, scrollViewRef }) => {
               style={{ borderRadius: "20px" }}
               onClick={() => {
                 // window.location.assign(`/social/postdetails/${post?._id}`)
-                getSinglePost(postDispatch, post._id)
+                getSinglePost(post._id)
               }}
             />
             {post.title && (
@@ -77,7 +77,7 @@ const GridImageview = ({ allPosts, scrollViewRef }) => {
                   <IconButton
                     aria-label={`info about ${post?.title}`}
                     className={classes.icon}>
-                    <InfoIcon />
+                    {/* <InfoIcon /> */}
                   </IconButton>
                 }
               />

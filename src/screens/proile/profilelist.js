@@ -27,7 +27,7 @@ const Profilelist = ({ route, logout }) => {
       return;
     }
 
-    await Sharing.shareAsync(`https://treazer.com/social/friend/${accountId}`);
+    await Sharing.shareAsync(`https://treazer-app.firebaseapp.com/social/friend/${accountId}`);
   };
 
   return (

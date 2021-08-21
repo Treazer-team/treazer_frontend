@@ -1,29 +1,11 @@
 import React, { useState, useEffect, useContext } from "react"
-import { View, Platform, Dimensions, ActivityIndicator } from "react-native"
+import { Platform } from "react-native"
 import { NavigationContainer } from "@react-navigation/native"
-const { width, height } = Dimensions.get("window")
 import dynamic from "next/dynamic"
+import Loading from "./Loading"
+
 const Tabs = dynamic(() => import("./tabs"), {
-  loading: () => (
-    <View
-      style={{
-        width,
-        height,
-        justifyContent: "center",
-        marginHorizontal: "auto",
-        marginVertical: "auto",
-        backgroundColor: "#ffffff",
-        alignItems: "center"
-      }}>
-      <ActivityIndicator
-        size='large'
-        color='#82b1ff'
-        style={{
-          margin: "auto"
-        }}
-      />
-    </View>
-  ),
+  loading: () => <Loading />,
   ssr: false
 })
 import { createStackNavigator } from "@react-navigation/stack"
@@ -77,7 +59,7 @@ const Rootnavigation = () => {
         )
         .then(res => {
           const { features } = res.data
-          console.log(features[0].place_name);
+          // console.log(features[0].place_name);
           // console.log(features[1].properties.address);
           locationDispatch({
             type: "SET_LOCATION_ADDRESS",
@@ -126,26 +108,7 @@ const Rootnavigation = () => {
   return (
     <NavigationContainer
       linking={linking}
-      fallback={
-        <View
-          style={{
-            width,
-            height,
-            justifyContent: "center",
-            marginHorizontal: "auto",
-            marginVertical: "auto",
-            backgroundColor: "#ffffff",
-            alignItems: "center"
-          }}>
-          <ActivityIndicator
-            size='large'
-            color='#82b1ff'
-            style={{
-              margin: "auto"
-            }}
-          />
-        </View>
-      }>
+      fallback={<Loading />}>
       <Stack.Navigator
         screenOptions={{
           headerShown: false

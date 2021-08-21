@@ -1,12 +1,14 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
   ActivityIndicator,
+  KeyboardAvoidingView
 } from "react-native";
-import { Icon, Button, CheckBox, Input } from "react-native-elements";
+import { Icon, Button, Input } from "react-native-elements";
+import { useNavigation } from "@react-navigation/native"
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import { AuthContext } from "../../context/userContext";
 import { NotificationContext } from "../../context/notificationContext";
@@ -15,13 +17,15 @@ import MuiAlert from "@material-ui/lab/Alert";
 import Dialog from "@material-ui/core/Dialog";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import * as PusherPushNotifications from "@pusher/push-notifications-web";
 function Alert(props) {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
 }
 const Profile = () => {
   const [sendReq, setSendReq] = useState(true);
+  const navigation = useNavigation()
   //GLOBAL STATE SETUP
-  const { dispatch } = useContext(AuthContext);
+  const { state, dispatch } = useContext(AuthContext);
   const { dispatch: notiDispatch } = useContext(NotificationContext);
 
   //LOCAL STATE SETUP
@@ -79,6 +83,7 @@ const Profile = () => {
       setSendReq,
       setPhoneError,
       setPassError,
+      navigation
     );
   };
   if (phoneError) {
@@ -111,7 +116,34 @@ const Profile = () => {
 
     );
   };
-
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user && user._id;
+  useEffect(() => {
+    if (!state.isBeamToken) {
+      window.navigator?.serviceWorker?.ready.then((serviceWorkerRegistration) => {
+        const beamsClient = new PusherPushNotifications.Client({
+          instanceId: "36674458-c456-44a3-823b-616088fa88e1",
+          serviceWorkerRegistration: serviceWorkerRegistration,
+        });
+        if (userId) {
+          beamsClient
+            .start()
+            .then(() =>
+              console.log(
+                "Successfully registered with Beams",
+              )
+            )
+            .then(() => beamsClient.getDeviceInterests())
+            .then((interests) => {
+              console.log("Current interests:", interests);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      });
+    }
+  }, [state?.isBeamToken]);
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flex: 1, flexDirection: "column" }}>
@@ -198,7 +230,7 @@ const Profile = () => {
             open={drawer}
             onClose={toggleDrawer}
             onOpen={toggleDrawer}>
-            <View style={styles.drawer}>
+            <KeyboardAvoidingView style={styles.drawer}>
               <View
                 style={{
                   marginVertical: 20,
@@ -317,7 +349,7 @@ const Profile = () => {
                   <ActivityIndicator size='large' color='#82b1ff' />
                 </View>
               )}
-            </View>
+            </KeyboardAvoidingView>
           </SwipeableDrawer>
         </View>
         <View>
@@ -326,7 +358,7 @@ const Profile = () => {
             open={drawer_2}
             onClose={toggleDrawer_2}
             onOpen={toggleDrawer_2}>
-            <View style={styles.drawer_2}>
+            <KeyboardAvoidingView style={styles.drawer_2}>
               <View
                 style={{
                   width: "90%",
@@ -607,7 +639,7 @@ const Profile = () => {
                   <ActivityIndicator size='large' color='#82b1ff' />
                 </View>
               )}
-            </View>
+            </KeyboardAvoidingView>
           </SwipeableDrawer>
           {open && (
             <Dialog open={open} onClose={handleClose}>

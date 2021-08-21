@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, Fragment } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,14 +8,14 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Icon, Avatar, Image, Button } from "react-native-elements";
-import { Portal, Dialog } from "react-native-paper";
+import { Portal, Dialog, Snackbar } from "react-native-paper";
 import axios from "axios";
 import BASE_URL from "../../api";
 import { AuthContext } from "../../context/userContext";
 import { PostContext } from "../../context/postContext";
 import FriendPosts from "./FriendPosts";
-import Refresh from "../refresh";
 import { followORunfollow } from "../../functions/postfunction";
+import Loading from "../../navigation/Loading";
 const { width, height } = Dimensions.get("window");
 
 const UserProfile = ({ route }) => {
@@ -24,9 +24,15 @@ const UserProfile = ({ route }) => {
 
   const { friendId } = route.params;
   const [frndReq, setfrndReq] = useState(true);
-  // console.log(friendId);
+
+  const [isLogin, setisLogin] = useState(false);
+  const onDismissSnackBar = () => setisLogin(false);
+
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?._id;
+  const token = localStorage.getItem("token")
+  const refreshtoken = localStorage.getItem("refresh-token")
+
   const [openProfilePic, setopenProfilePic] = useState(false);
   const closeProfilePicDialog = () => setopenProfilePic(false);
 
@@ -40,13 +46,14 @@ const UserProfile = ({ route }) => {
     followORunfollow(
       id,
       { postId: undefined },
-      { userState },
       { userDispatch, postDispatch },
       {
-        setisLogin: undefined,
+        setisLogin,
         setFollowMsg: undefined,
         setfollowSnackbarOpen: undefined,
-      }
+      },
+      { token, refreshtoken }
+
     );
   };
   const getFriendProfile = () => {
@@ -55,7 +62,7 @@ const UserProfile = ({ route }) => {
       .post(`${BASE_URL}/api/user/friendprofile`, { friendId })
       .then((res) => {
         const { friend } = res.data;
-        console.log(friend);
+        // console.log(friend);
         userDispatch({ type: "GET_FRIEND'S_PROFILE", payload: friend });
         setfrndReq(true);
       })
@@ -71,7 +78,7 @@ const UserProfile = ({ route }) => {
       .post(`${BASE_URL}/api/posts/getfriendposts`, { friendId })
       .then((res) => {
         const { friendPosts } = res.data;
-        console.log(friendPosts);
+        // console.log(friendPosts);
         postDispatch({ type: "GET_MY_FRIEND'S_POSTS", payload: friendPosts });
         setfrndPostReq(true);
       })
@@ -81,7 +88,7 @@ const UserProfile = ({ route }) => {
   };
 
   return (
-    <Refresh>
+    <Fragment>
       <View style={styles.container}>
         {frndReq ? (
           <View style={{ height: height * 0.95 }}>
@@ -96,7 +103,6 @@ const UserProfile = ({ route }) => {
                     borderTopLeftRadius: 20,
                   }}
                 />
-
                 <View
                   style={{
                     position: "absolute",
@@ -117,7 +123,6 @@ const UserProfile = ({ route }) => {
                     onPress={() => window.history.back()}
                   />
                 </View>
-
                 <View style={styles.div_3}>
                   <Avatar
                     source={{ uri: userState.friend?.photo }}
@@ -231,7 +236,7 @@ const UserProfile = ({ route }) => {
                 style={{
                   justifyContent: "center",
                   alignItems: "center",
-                  // marginHorizontal: 10,
+                  paddingBottom: 20,
                   width: "100%",
                 }}>
                 <Text
@@ -251,19 +256,7 @@ const UserProfile = ({ route }) => {
                 {frndPostReq ? (
                   <FriendPosts route={route} />
                 ) : (
-                  <View
-                    style={{
-                      width,
-                      marginTop: 20,
-                    }}>
-                    <ActivityIndicator
-                      size='large'
-                      color='#82b1ff'
-                      style={{
-                        margin: "auto",
-                      }}
-                    />
-                  </View>
+                  <Loading />
                 )}
               </View>
             </ScrollView>
@@ -319,7 +312,21 @@ const UserProfile = ({ route }) => {
           </View>
         </Dialog>
       </Portal>
-    </Refresh>
+      <Portal>
+        <Snackbar
+          visible={isLogin}
+          onDismiss={onDismissSnackBar}
+          style={{ bottom: 50 }}
+          action={{
+            label: "Close",
+            onPress: () => {
+              onDismissSnackBar();
+            },
+          }}>
+          You are not logged in
+        </Snackbar>
+      </Portal>
+    </Fragment>
   );
 };
 

@@ -54,7 +54,7 @@ const SingleRestaurent = ({ route, navigation }) => {
       return;
     }
 
-    await Sharing.shareAsync(`https://treazer.com/home/singleRestaurent/${id}`);
+    await Sharing.shareAsync(`https://treazer-app.firebaseapp.com/home/singleRestaurent/${id}`);
   };
 
   return isLoading ? (

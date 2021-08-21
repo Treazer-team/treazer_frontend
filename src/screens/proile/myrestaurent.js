@@ -82,7 +82,7 @@ const MyRestaurent = ({ route, navigation }) => {
     }
 
     await Sharing.shareAsync(
-      `https://treazer.com/home/singleRestaurent/${resturantId}`
+      `https://treazer-app.firebaseapp.com/home/singleRestaurent/${resturantId}`
     );
   };
   return (

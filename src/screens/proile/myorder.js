@@ -44,7 +44,7 @@ const Myorder = ({ scrollPosition }) => {
           if (order.length !== 0) {
             orderDispatch({ type: "PLACE_MY_ORDER", payload: order });
           }
-          console.log(order);
+          // console.log(order);
           setOrderReq(true);
         })
         .catch((err) => {

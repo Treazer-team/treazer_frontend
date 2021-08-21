@@ -1,361 +1,18 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext } from "react"
 import { useNavigation } from "@react-navigation/native"
-import dynamic from "next/dynamic";
-import {
-  View,
-  TouchableOpacity,
-  ActivityIndicator,
-  Dimensions
-} from "react-native"
-const { width, height } = Dimensions.get("window")
+import { View } from "react-native"
 import { Badge } from "react-native-elements"
-import {
-  createBottomTabNavigator,
-  BottomTabBar
-} from "@react-navigation/bottom-tabs"
-import { createStackNavigator } from "@react-navigation/stack"
-import { AuthContext } from "../context/userContext"
+import { createBottomTabNavigator, BottomTabBar } from "@react-navigation/bottom-tabs"
 import { CartContext } from "../context/cartContext"
-import { Path } from "react-native-svg"
-import Svg from "react-native-svg"
-import { getCartItems } from "../functions/cartfunction"
-const Loading = () => (
-  <View
-    style={{
-      width,
-      height,
-      justifyContent: "center",
-      marginHorizontal: "auto",
-      marginVertical: "auto",
-      backgroundColor: "#ffffff",
-      alignItems: "center"
-    }}>
-    <ActivityIndicator
-      size='large'
-      color='#82b1ff'
-      style={{
-        margin: "auto"
-      }}
-    />
-  </View>
-)
+
+import ProfileStackScreen from "./stackScreens/ProfileStackScreen"
+import CartStackScreen from "./stackScreens/CartStackScreen"
+import SocialStackScreen from "./stackScreens/SocialStackScreen"
+import RestaurantStackScreen from "./stackScreens/RestaurantStackScreen"
+import FoodFormStackScreen from "./stackScreens/FoodFormStackScreen"
+import TabBarCustomButton from "./TabBarCustomButton"
+
 const Tab = createBottomTabNavigator()
-const HomeStack = createStackNavigator()
-const ProfileStack = createStackNavigator()
-const CartStack = createStackNavigator()
-const FoodFormStack = createStackNavigator()
-const SocialStack = createStackNavigator()
-//====================================================================================
-// PROFILE
-//=====================================================================================
-const PROFILE_SCREEN = {
-  About: dynamic(() => import("../screens/proile/about"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  Privecypolicy: dynamic(() => import("../screens/proile/privecypolicy"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  Refundpolicy: dynamic(() => import("../screens/proile/refundpolicy"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  ProfileBio: dynamic(() => import("../screens/proile/ProfileBio"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  Profile: dynamic(() => import("../screens/proile/profile"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  MyRestaurent: dynamic(() => import("../screens/proile/myrestaurent"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  Myrestaurentfoodlist: dynamic(() => import("../screens/proile/myrestaurentfoodlist"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  Orderist: dynamic(() => import("../screens/proile/orderist"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  Mybill: dynamic(() => import("../screens/proile/mybill"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  Businessform: dynamic(() => import("../screens/proile/businessform"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-}
-const ProfileStackScreen = () => {
-  const { state } = useContext(AuthContext)
-  return (
-    <ProfileStack.Navigator
-      screenOptions={{
-        headerShown: false
-      }}>
-      {!state.isLogin ? (
-        <ProfileStack.Screen
-          name='Login'
-          component={PROFILE_SCREEN.Profile}
-        />
-      ) : (
-        <>
-          <ProfileStack.Screen name='Profile' component={PROFILE_SCREEN.ProfileBio} />
-          <ProfileStack.Screen name='BusinessForm' component={PROFILE_SCREEN.Businessform} />
-          <ProfileStack.Screen name='MyRestaurent' component={PROFILE_SCREEN.MyRestaurent} />
-          <ProfileStack.Screen name='MyMenu' component={PROFILE_SCREEN.Myrestaurentfoodlist} />
-          <ProfileStack.Screen name='MyOrder' component={PROFILE_SCREEN.Orderist} />
-        </>
-      )}
-      <ProfileStack.Screen name='About' component={PROFILE_SCREEN.About} />
-      <ProfileStack.Screen name='PrivecyPolicy' component={PROFILE_SCREEN.Privecypolicy} />
-      <ProfileStack.Screen name='RefundPolicy' component={PROFILE_SCREEN.Refundpolicy} />
-      <ProfileStack.Screen name='MyBill' component={PROFILE_SCREEN.Mybill} />
-    </ProfileStack.Navigator>
-  )
-}
-//=====================================================================================
-//CART
-//=====================================================================================
-const CART_SCREEN = {
-  cart: dynamic(() => import("../screens/cart/cart"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  Emptycartscreen: dynamic(() => import("../screens/cart/emptycartscreen"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-}
-const CartStackScreen = () => {
-  const { state, dispatch } = useContext(CartContext)
-  const user = JSON.parse(localStorage.getItem("user"))
-  const id = user && user._id
-  const [cartReq, setCartReq] = useState(true)
-  useEffect(() => {
-    if (!user || state.cartItems === null) {
-      getCartItems(id, dispatch, setCartReq)
-    }
-  }, [])
-  return (
-    <CartStack.Navigator
-      screenOptions={{
-        headerShown: false
-      }}
-    // initialRouteName={"CartItem"}
-    >
-      {state &&
-        state.cartItems !== null &&
-        state.cartItems.cartItem.length !== 0 &&
-        state.cartItems.userId.toString() === id.toString() ? (
-        <CartStack.Screen
-          name='CartItem'
-          component={props => (
-            <View
-              style={{
-                height,
-                backgroundColor: "#ffffff",
-                justifyContent: "center",
-                alignItems: "center"
-              }}>
-              {cartReq ? (
-                <CART_SCREEN.Cart {...props} />
-              ) : (
-                <ActivityIndicator
-                  size='large'
-                  color='#82b1ff'
-                  style={{
-                    margin: "auto"
-                  }}
-                />
-              )}
-            </View>
-          )}
-        />
-      ) : (
-        <CartStack.Screen
-          name='EmptyCart'
-          component={CART_SCREEN.Emptycartscreen}
-        />
-      )}
-    </CartStack.Navigator>
-  )
-}
-//==================================================================================
-// SOCIAL
-//==================================================================================
-const SOCIAL_SCREEN = {
-  SocialHome: dynamic(() => import("../screens/social/SocialHome"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  PostDetails: dynamic(() => import("../screens/social/PostDetails"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  UserProfile: dynamic(() => import("../screens/social/UserProfile"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  Notification: dynamic(() => import("../screens/notification/notification"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-}
-const SocialStackScreen = () => {
-  return (
-    <SocialStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-      initialRouteName={"SocialHome"}
-    >
-      <SocialStack.Screen name='SocialHome' component={SOCIAL_SCREEN.SocialHome} />
-      <SocialStack.Screen name='Notification' component={SOCIAL_SCREEN.Notification} />
-      <SocialStack.Screen name='PostDetails' component={SOCIAL_SCREEN.PostDetails} />
-      <SocialStack.Screen name='FriendProfile' component={SOCIAL_SCREEN.UserProfile} />
-    </SocialStack.Navigator>
-  )
-}
-//==================================================================================
-//RESTAURANT
-//==================================================================================
-const RESTAURANT_SCREEN = {
-  Home: dynamic(() => import("../screens/restaurant/Home"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  Foodlist: dynamic(() => import("../screens/restaurant/foodlist"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  SingleRestaurent: dynamic(() => import("../screens/restaurant/singleRestaurent"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  FilterProduct: dynamic(() => import("../screens/restaurant/filterProduct"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  OrderDelivery: dynamic(() => import("../screens/restaurant/OrderDelivery"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  MapPage: dynamic(() => import("../screens/restaurant/map"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-}
-const HomeStackScreen = () => {
-  return (
-    <HomeStack.Navigator
-      screenOptions={{
-        headerShown: false
-      }}
-      initialRouteName={"Index"}>
-      <HomeStack.Screen name='Index' component={RESTAURANT_SCREEN.Home} />
-      <HomeStack.Screen name='Filter_product' component={RESTAURANT_SCREEN.FilterProduct} />
-      <HomeStack.Screen name='Menu' component={RESTAURANT_SCREEN.Foodlist} />
-      <HomeStack.Screen name='Restaurant' component={RESTAURANT_SCREEN.SingleRestaurent} />
-      <HomeStack.Screen name='Location' component={RESTAURANT_SCREEN.OrderDelivery} />
-      <HomeStack.Screen name='UserLocation' component={RESTAURANT_SCREEN.MapPage} />
-    </HomeStack.Navigator>
-  )
-}
-//==================================================================================
-//FOODADD
-//==================================================================================
-const FOODADD_SCREEN = {
-  Additems: dynamic(() => import("../screens/add/Additems"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  Emptyfoodaddscreen: dynamic(() => import("../screens/add/emptyfoodaddscreen"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  AddPost: dynamic(() => import("../screens/add/AddPost"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-  SelectChoice: dynamic(() => import("../screens/add/SelectChoice"), {
-    loading: () => Loading(),
-    ssr: false
-  }),
-}
-const FoodFormStackScreen = () => {
-  const { state } = useContext(AuthContext)
-  return (
-    <FoodFormStack.Navigator
-      screenOptions={{
-        headerShown: false
-      }}>
-      {!state.isLogin ? (
-        <FoodFormStack.Screen
-          name='Emptyfoodaddscreen'
-          component={FOODADD_SCREEN.Emptyfoodaddscreen}
-        />
-      ) : (
-        <>
-          <FoodFormStack.Screen name='SelectChoice' component={FOODADD_SCREEN.SelectChoice} />
-          <FoodFormStack.Screen name='AddFood' component={FOODADD_SCREEN.Additems} />
-          <FoodFormStack.Screen name='AddPost' component={FOODADD_SCREEN.AddPost} />
-        </>
-      )}
-    </FoodFormStack.Navigator>
-  )
-}
-//=============================================================================
-
-const TabBarCustomButton = ({ accessibilityState, children, onPress }) => {
-  var isSelected = accessibilityState.selected
-
-  if (isSelected) {
-    return (
-      <View
-        style={{ flex: 1, alignItems: "center", backgroundColor: "#ffffff" }}>
-        <View style={{ flexDirection: "row", position: "absolute", top: 0 }}>
-          <Svg width={75} height={0} viewBox='0 0 75 0'>
-            <Path
-              d='M75.2 0v61H0V0c4.1 0 7.4 3.1 7.9 7.1C10 21.7 22.5 33 37.7 33c15.2 0 27.7-11.3 29.7-25.9.5-4 3.9-7.1 7.9-7.1h-.1z'
-              fill='#ffffff'
-            />
-          </Svg>
-        </View>
-        <TouchableOpacity
-          style={{
-            top: -22.5,
-            justifyContent: "center",
-            alignItems: "center",
-            width: 50,
-            height: 50,
-            borderRadius: 25,
-            backgroundColor: "#00A7FF"
-          }}
-          onPress={onPress}>
-          {children}
-        </TouchableOpacity>
-      </View>
-    )
-  } else {
-    return (
-      <TouchableOpacity
-        style={{
-          flex: 1,
-          height: 49,
-          backgroundColor: "white"
-        }}
-        activeOpacity={1}
-        onPress={onPress}>
-        {children}
-      </TouchableOpacity>
-    )
-  }
-}
 
 const CustomTabBar = props => {
   return <BottomTabBar {...props.props} />
@@ -363,6 +20,7 @@ const CustomTabBar = props => {
 
 const Tabs = () => {
   const { state: cartState } = useContext(CartContext)
+  const navigation = useNavigation()
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -392,8 +50,9 @@ const Tabs = () => {
               role='img'
               xmlns='http://www.w3.org/2000/svg'
               viewBox='0 0 576 512'
-              width={30}
-              height={30}
+              width={24}
+              height={24}
+              onClick={() => navigation.navigate("Social", { screen: "SocialHome" })}
             >
               <path
                 fill={focused ? "#ffffff" : "#00A7FF"}
@@ -405,7 +64,7 @@ const Tabs = () => {
       />
       <Tab.Screen
         name='Home'
-        component={HomeStackScreen}
+        component={RestaurantStackScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <svg
@@ -417,8 +76,9 @@ const Tabs = () => {
               role='img'
               xmlns='http://www.w3.org/2000/svg'
               viewBox='0 0 416 512'
-              width={30}
-              height={30}
+              width={24}
+              height={24}
+              onClick={() => navigation.navigate("Home", { screen: "Index" })}
             >
               <path
                 fill={focused ? "#ffffff" : "#00A7FF"}
@@ -442,8 +102,9 @@ const Tabs = () => {
               role='img'
               xmlns='http://www.w3.org/2000/svg'
               viewBox='0 0 448 512'
-              width={30}
-              height={30}>
+              width={24}
+              height={24}
+            >
               <path
                 fill={focused ? "#ffffff" : "#00A7FF"}
                 d='M352 240v32c0 6.6-5.4 12-12 12h-88v88c0 6.6-5.4 12-12 12h-32c-6.6 0-12-5.4-12-12v-88h-88c-6.6 0-12-5.4-12-12v-32c0-6.6 5.4-12 12-12h88v-88c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v88h88c6.6 0 12 5.4 12 12zm96-160v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h352c26.5 0 48 21.5 48 48zm-48 346V86c0-3.3-2.7-6-6-6H54c-3.3 0-6 2.7-6 6v340c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z'></path>
@@ -467,8 +128,8 @@ const Tabs = () => {
                 role='img'
                 xmlns='http://www.w3.org/2000/svg'
                 viewBox='0 0 576 512'
-                width={30}
-                height={30}>
+                width={24}
+                height={24}>
                 <path
                   fill={focused ? "#ffffff" : "#00A7FF"}
                   d='M576 216v16c0 13.255-10.745 24-24 24h-8l-26.113 182.788C514.509 462.435 494.257 480 470.37 480H105.63c-23.887 0-44.139-17.565-47.518-41.212L32 256h-8c-13.255 0-24-10.745-24-24v-16c0-13.255 10.745-24 24-24h67.341l106.78-146.821c10.395-14.292 30.407-17.453 44.701-7.058 14.293 10.395 17.453 30.408 7.058 44.701L170.477 192h235.046L326.12 82.821c-10.395-14.292-7.234-34.306 7.059-44.701 14.291-10.395 34.306-7.235 44.701 7.058L484.659 192H552c13.255 0 24 10.745 24 24zM312 392V280c0-13.255-10.745-24-24-24s-24 10.745-24 24v112c0 13.255 10.745 24 24 24s24-10.745 24-24zm112 0V280c0-13.255-10.745-24-24-24s-24 10.745-24 24v112c0 13.255 10.745 24 24 24s24-10.745 24-24zm-224 0V280c0-13.255-10.745-24-24-24s-24 10.745-24 24v112c0 13.255 10.745 24 24 24s24-10.745 24-24z'></path>
@@ -501,8 +162,8 @@ const Tabs = () => {
               role='img'
               xmlns='http://www.w3.org/2000/svg'
               viewBox='0 0 448 512'
-              width={30}
-              height={30}
+              width={24}
+              height={24}
             >
               <path
                 fill={focused ? "#ffffff" : "#00A7FF"}

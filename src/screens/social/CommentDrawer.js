@@ -19,46 +19,16 @@ const { height } = Dimensions.get("window");
 const CommentDrawer = ({ post, drawer, toggleDrawer }) => {
   // console.log(post)
   const { dispatch: postDispatch } = useContext(PostContext);
-  const { state: userState } = useContext(AuthContext);
   const [comment, setcomment] = useState("");
   const [isLogin, setisLogin] = useState(false);
   const onDismissSnackBar = () => setisLogin(false);
-  // const token = localStorage.getItem("token");
-  // const refreshtoken = localStorage.getItem("refresh-token");
+
   const commentOnPost = (postId) => {
-    makeComment(postId, comment, userState, { setisLogin, setcomment }, { postDispatch })
+    makeComment(postId, comment,
+      { setisLogin, setcomment },
+      { postDispatch })
   }
-  // const makeComment = (postId) => {
-  //   console.log(postId);
-  //   if (!userState.isLogin) {
-  //     setisLogin(true);
-  //   } else {
-  //     axios
-  //       .post(
-  //         `${BASE_URL}/api/posts/createcomment`,
-  //         { postId, comment },
-  //         {
-  //           headers: {
-  //             "x-token": token,
-  //             "x-refresh-token": refreshtoken,
-  //           },
-  //         }
-  //       )
-  //       .then((res) => {
-  //         const { comments, post: commentPost } = res.data;
-  //         console.log(comments);
-  //         postDispatch({
-  //           type: "ADD_COMMENT_TO_POST",
-  //           payload: { postId, comments },
-  //         });
-  //         postDispatch({ type: "GET_SINGLE_POST", payload: postId });
-  //         setcomment("");
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       });
-  //   }
-  // };
+
   return (
     <Drawer anchor='bottom' open={drawer} onClose={toggleDrawer}>
       <SafeAreaView
@@ -253,7 +223,6 @@ const CommentDrawer = ({ post, drawer, toggleDrawer }) => {
         <Snackbar
           visible={isLogin}
           onDismiss={onDismissSnackBar}
-          style={{ backgroundColor: "#ff5252" }}
           action={{
             label: "Close",
             onPress: () => {
